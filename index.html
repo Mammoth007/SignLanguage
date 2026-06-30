@@ -1,0 +1,471 @@
+<div class="tab-content active" id="sign-to-text">
+            <div class="demo-area">
+                <div class="video-container">
+                    <video id="video" playsinline></video>
+                    <canvas id="canvas" class="canvas-overlay"></canvas>
+                </div>
+                <div class="controls">
+                    <button id="start-camera" class="control-btn" aria-label="Start Camera">
+                        <i class="fas fa-video"></i> Start Camera
+                    </button>
+                    <button id="start-detection" class="control-btn" disabled aria-label="Start Hand Detection">
+                        <i class="fas fa-hand-paper"></i> Start Detection
+                    </button>
+                    <button id="stop-detection" class="control-btn" disabled aria-label="Stop Hand Detection">
+                        <i class="fas fa-stop-circle"></i> Stop
+                    </button>
+                </div>
+                <div class="output-container">
+                    <p id="output-text">Detection results will appear here...</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content" id="speech-to-sign">
+            <div class="demo-area">
+                <div class="video-container">
+                    <div class="avatar-container">
+                        <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA3MDAgNzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJyZ2JhKDAsIDAsIDAsIDApIi8+PGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMCwwKSI+PGNpcmNsZSByPSIxNDAiIGN4PSIyMjAiIGN5PSIzNTAiIGZpbGw9IiNlZGM5MmEiIHNoYXBlPSJjaXJjbGUiLz48cGF0aCBkPSJNMjU1LjAzLDM0OS45NzAwMDAwMDAwMDAwNCBDMjU1LjAzLDM0OS45NzAwMDAwMDAwMDAwNCAyNDkuOTYsMzcwLjg3NCAyNDAuNDQsMzcwLjg3NCAyMzAuOTI5OTk5OTk5OTk5OTgsMzcwLjg3NCAyMjIuNSwzNDkuOTcwMDAwMDAwMDAwMDQgMjIyLjUsMzQ5Ljk3MDAwMDAwMDAwMDA0IEwyMjIuNSwzMDUuNDMxIEwyMTkuMzksMzA1LjQzMSBDMjA4LjMzOTk5OTk5OTk5OTk4LDMwNS40MzEgMTk3Ljg2LDMxMS45MTk5OTk5OTk5OTk5NyAxOTIuNDksMzIyLjE3NCBMMTgwLjQ3LDM0OS45NzAwMDAwMDAwMDAwNCBDMTgwLjQ3LDM0OS45NzAwMDAwMDAwMDAwNCAxNzIuNywzNzAuODc0IDE2My4xOCwzNzAuODc0IDE1My42NywzNzAuODc0IDE0OS4xLDM0OS45NzAwMDAwMDAwMDAwNCAxNDkuMSwzNDkuOTcwMDAwMDAwMDAwMDQgTDE1NC4wNjk5OTk5OTk5OTk5OCwzMzMuMDkgQzE1OS4xNCwzMTYuODY4IDE3NC40NSwzMDYuNjM2OTk5OTk5OTk5OTYgMTkwLjEyLDMxMC41MjUgTDE5MC4xMiwyNzEuMTAyIEwxOTAuMTIsMjYwLjg2ODk5OTk5OTk5OTk3IEMxOTAuMTIsMjM4LjczOTk5OTk5OTk5OTk4IDIwMi42LDIxOS42NzY5OTk5OTk5OTk5OCAyMjMuMSwyMDkuNDQ0OTk5OTk5OTk5OTggTDIyMy4xLDIzMC4zNDc5OTk5OTk5OTk5OCBDMjIzLjEsMjQyLjYyODk5OTk5OTk5OTk4IDIzMC44NjkwMDAwMDAwMDAwMywyNTIuODgzIDE0MS42NjQsMjcxLjU0ODk5OTk5OTk5OTk3IEwxNDEuNjY0LDMxMy45NzYwMDAwMDAwMDAwNCBDMTQxLjY2LDM0NS4zNDAwMDAwMDAwMDAwNiAxNTcuNTgsMzcyLjY4NDAwMDAwMDAwMDA0IDE4Mi40OCwzODUuODU3MDAwMDAwMDAwMDQgTDE4Mi40OCwzNTIuNzQ1MDAwMDAwMDAwMDUgQzE4Mi40OCwzNDUuNzc1MDAwMDAwMDAwMDYgMTg3LjksNDAwLjE5MDAwMDAwMDAwMDA1IDE5OS43Nyw0MDAuMTkwMDAwMDAwMDAwMDUgTDIwNC4yNyw0MDAuMTkwMDAwMDAwMDAwMDUgQzIyMS4wMyw0MDAuMTkwMDAwMDAwMDAwMDUgMjI0LjksNDAwLjE5MDAwMDAwMDAwMDA1IDI0MC4wMSw0MDAuMTkwMDAwMDAwMDAwMDUgTDI0My45LDQwMC4xOTAwMDAwMDAwMDAwNSBDMjU1Ljc2LDQwMC4xOTAwMDAwMDAwMDAwNSAyNjEuMTgsMzQ1Ljc3NTAwMDAwMDAwMDA2IDI2MS4xOCwzNTIuNzQ1MDAwMDAwMDAwMDUgTDI2MS4xOCwzODUuODU3MDAwMDAwMDAwMDQgQzI4Ni4wOCwzNzIuNjg0MDAwMDAwMDAwMDQgMzAyLDM0NS4zNDAwMDAwMDAwMDAwNiAzMDIsMzEzLjk3NjAwMDAwMDAwMDA0IEwzMDIsMjcxLjU0ODk5OTk5OTk5OTk3IEMyMTIuNzk1LDI1Mi44ODMgMjIwLjU2ODgwNzk0ODQ4MTg3LDI0Mi42Mjg5OTk5OTk5OTk5OCAyMjAuNTY4ODA3OTQ4NDgxODcsMjMwLjM0Nzk5OTk5OTk5OTk4IEwyMjAuNTY4ODA3OTQ4NDgxODcsMjA5LjQ0NDk5OTk5OTk5OTk4IEMyNDEuMDY4ODA3OTQ4NDgxODcsMjE5LjY3Njk5OTk5OTk5OTk4IDI1My41NSwyMzguNzQgMjUzLjU1LDI2MC44NjkgTDI1My41NSwyNzEuMTAyIEwyNTMuNTUsMzEwLjUyNyBDMjY5LjIyLDMwNi42MjU5OTk5OTk5OTk5NyAyODQuNTMsMzE2Ljg2OCAyODkuNiwzMzMuMDkgTDI5NC41NywzNDkuOTcwMDAwMDAwMDAwMDQgQzI5NC41NywzNDkuOTcwMDAwMDAwMDAwMDQgMjkwLDM3MC44NzQgMjgwLjQ5LDM3MC44NzQgQzI3MC45NzU0NjU1ODYzMTYzLDM3MC44NzQgMjYzLjIxLDM0OS45NzAwMDAwMDAwMDAwNCAyNjMuMjEsMzQ5Ljk3MDAwMDAwMDAwMDA0IEwyNTEuMTksMzIyLjE3NCBDMjQ1LjgyLDMxMS45MTk5OTk5OTk5OTk5NyAyMzUuMzQsMzA1LjQzMSAyMjQuMjksMzA1LjQzMSBMMjIxLjE4LDMwNS40MzEgTDIyMS4xOCwzNDkuOTcwMDAwMDAwMDAwMDQgTDI1NS4wMywzNDkuOTcwMDAwMDAwMDAwMDQgWiIgZmlsbD0iI2YyZjJmMiIgc3Ryb2tlPSIjZjJmMmYyIiBzdHJva2Utd2lkdGg9IjIiLz48L2c+PGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMCwwKSI+PGNpcmNsZSByPSIxNDAiIGN4PSI0ODAiIGN5PSIzNTAiIGZpbGw9IiM4OTM4Y2EiIHNoYXBlPSJjaXJjbGUiLz48cGF0aCBkPSJNNTI1Ljk0LDQwMC4yOCBDNTI1Ljk0LDM5OS4xNyA0NjcuNjQsMzIyLjM4IDQ2Ny42NCwzMjIuMzggQzQ2Ny42NCwzMjIuMzggNDY3LjYzLDMyMi4zNyA0NjcuNjMsMzIyLjM3IEM0NjcuNjMsMzIyLjM2IDQ2Ny42MywzMjIuMzYgNDY3LjYzLDMyMi4zNiBDNDY2LjY3LDMyMC45NyA0NjYuMTksMzE5LjMyIDQ2Ni4xOSwzMTcuNTUgQzQ2Ni4xOSwzMTIuOTIgNDY5LjkzLDMwOS4xOCA0NzQuNTYsMzA5LjE4IEM0NzguMzQsMzA5LjE4IDQ4MS41MywzMTEuNzggNDgyLjY3LDMxNS4yOCBDNDgyLjY3LDMxNS4yOCA0ODIuNjcsMzE1LjI4IDQ4Mi42NywzMTUuMjggQzQ4Mi42NywzMTUuMjggNDgyLjY4LDMxNS4zIDQ4Mi42OCwzMTUuMyBDNDg0LjMzLDMyMSA0ODguMzUsMzI3LjY1IDQ5Mi40NCwzMzQuMzYgQzQ5Mi40NCwzMzQuMzYgNDkyLjQ0LDMzNC4zNiA0OTIuNDQsMzM0LjM2IEM0OTYuODcsMzI0LjkzIDUwNC4yNSwzMjYuNzggNTA2LjY3LDMyOS4yNyBDNTA2LjY3LDMyOS4yNyA1MDYuNjcsMzI5LjI3IDUwNi42NywzMjkuMjcgQzUwOS4xNSwzMjIuNSA1MTYuMDQsMzE3Ljc0IDUyMy45NiwzMTcuNzQgQzUzMC40LDMxNy43NCA1MzYuMDgsMzIxLjA0IDUzOS4xOCwzMjYuMTIgTDUzOS4yLDMyNi4xNCBDNTM5LjIsMzI2LjE0IDUzOS4yMSwzMjYuMTUgNTM5LjIxLDMyNi4xNiBDNTM5LjIxLDMyNi4xNiA1MzkuMjEsMzI2LjE2IDUzOS4yMSwzMjYuMTYgQzUzOS4yMywzMjYuMTkgNTM5LjI0LDMyNi4yMSA1MzkuMjYsMzI2LjI0IEM1MzkuMjYsMzI2LjI0IDUzOS4yNiwzMjYuMjQgNTM5LjI2LDMyNi4yNCBDNTQxLjc2LDMzMC41NiA1NDMuMTYsMzM1LjY0IDU0My4xNiwzNDEuMDkgQzU0My4xNiwzNDUuNjkgNTQyLjE3LDM1MC4wOCA1NDAuNDIsMzU0LjA1IEw1MjYuMjEsMzgyLjk0IEM1MjYuMjEsMzgyLjk0IDUyNS45NCw0MDAuNDcgNTI1Ljk0LDQwMC40NyBDNTI1Ljk0LDQwMC40NyA1MjUuOTQsNDAwLjI4IDUyNS45NCw0MDAuMjggWiBNNDk4LjY5LDI4MS4wNCBDNDk4LjY5LDI4MS4wNCA0OTguNjksMjgxLjA0IDQ5OC42OSwyODEuMDQgQzQ5OC42OSwyODEuMDQgNDk3LjQ5LDI3Mi4xNSA0ODUuMTYsMjcyLjcyIEw0MjguNTUsMjczLjk0IEw0MjguNTUsMjk1LjQ1IEw0OTguNjksMjgxLjA0IFoiIGZpbGw9IiNmZmZmZmYiIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2UtbGluZWNhcD0iYnV0dCIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIvPjwvZz48L3N2Zz4=" alt="Sign Language Avatar" class="sign-avatar">
+                    </div>
+                </div>
+                <div class="controls">
+                    <button id="start-listening" class="control-btn" aria-label="Start Listening for Speech">
+                        <i class="fas fa-microphone"></i> Start Listening
+                    </button>
+                    <button id="stop-listening" class="control-btn" disabled aria-label="Stop Listening">
+                        <i class="fas fa-stop-circle"></i> Stop Listening
+                    </button>
+                </div>
+                <div class="output-container">
+                    <p id="speech-text">Speak and see your words converted to sign language...</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content" id="text-to-sign">
+            <div class="demo-area">
+                <div class="video-container">
+                    <div class="avatar-container">
+                        <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA3MDAgNzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJyZ2JhKDAsIDAsIDAsIDApIi8+PGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMCwwKSI+PGNpcmNsZSByPSIxNDAiIGN4PSIyMjAiIGN5PSIzNTAiIGZpbGw9IiNlZGM5MmEiIHNoYXBlPSJjaXJjbGUiLz48cGF0aCBkPSJNMjU1LjAzLDM0OS45NzAwMDAwMDAwMDAwNCBDMjU1LjAzLDM0OS45NzAwMDAwMDAwMDAwNCAyNDkuOTYsMzcwLjg3NCAyNDAuNDQsMzcwLjg3NCAyMzAuOTI5OTk5OTk5OTk5OTgsMzcwLjg3NCAyMjIuNSwzNDkuOTcwMDAwMDAwMDAwMDQgMjIyLjUsMzQ5Ljk3MDAwMDAwMDAwMDA0IEwyMjIuNSwzMDUuNDMxIEwyMTkuMzksMzA1LjQzMSBDMjA4LjMzOTk5OTk5OTk5OTk4LDMwNS40MzEgMTk3Ljg2LDMxMS45MTk5OTk5OTk5OTk5NyAxOTIuNDksMzIyLjE3NCBMMTgwLjQ3LDM0OS45NzAwMDAwMDAwMDAwNCBDMTgwLjQ3LDM0OS45NzAwMDAwMDAwMDAwNCAxNzIuNywzNzAuODc0IDE2My4xOCwzNzAuODc0IDE1My42NywzNzAuODc0IDE0OS4xLDM0OS45NzAwMDAwMDAwMDAwNCAxNDkuMSwzNDkuOTcwMDAwMDAwMDAwMDQgTDE1NC4wNjk5OTk5OTk5OTk5OCwzMzMuMDkgQzE1OS4xNCwzMTYuODY4IDE3NC40NSwzMDYuNjM2OTk5OTk5OTk5OTYgMTkwLjEyLDMxMC41MjUgTDE5MC4xMiwyNzEuMTAyIEwxOTAuMTIsMjYwLjg2ODk5OTk5OTk5OTk3IEMxOTAuMTIsMjM4LjczOTk5OTk5OTk5OTk4IDIwMi42LDIxOS42NzY5OTk5OTk5OTk5OCAyMjMuMSwyMDkuNDQ0OTk5OTk5OTk5OTggTDIyMy4xLDIzMC4zNDc5OTk5OTk5OTk5OCBDMjIzLjEsMjQyLjYyODk5OTk5OTk5OTk4IDIzMC44NjkwMDAwMDAwMDAwMywyNTIuODgzIDE0MS42NjQsMjcxLjU0ODk5OTk5OTk5OTk3IEwxNDEuNjY0LDMxMy45NzYwMDAwMDAwMDAwNCBDMTQxLjY2LDM0NS4zNDAwMDAwMDAwMDAwNiAxNTcuNTgsMzcyLjY4NDAwMDAwMDAwMDA0IDE4Mi40OCwzODUuODU3MDAwMDAwMDAwMDQgTDE4Mi40OCwzNTIuNzQ1MDAwMDAwMDAwMDUgQzE4Mi40OCwzNDUuNzc1MDAwMDAwMDAwMDYgMTg3LjksNDAwLjE5MDAwMDAwMDAwMDA1IDE5OS43Nyw0MDAuMTkwMDAwMDAwMDAwMDUgTDIwNC4yNyw0MDAuMTkwMDAwMDAwMDAwMDUgQzIyMS4wMyw0MDAuMTkwMDAwMDAwMDAwMDUgMjI0LjksNDAwLjE5MDAwMDAwMDAwMDA1IDI0MC4wMSw0MDAuMTkwMDAwMDAwMDAwMDUgTDI0My45LDQwMC4xOTAwMDAwMDAwMDAwNSBDMjU1Ljc2LDQwMC4xOTAwMDAwMDAwMDAwNSAyNjEuMTgsMzQ1Ljc3NTAwMDAwMDAwMDA2IDI2MS4xOCwzNTIuNzQ1MDAwMDAwMDAwMDUgTDI2MS4xOCwzODUuODU3MDAwMDAwMDAwMDQgQzI4Ni4wOCwzNzIuNjg0MDAwMDAwMDAwMDQgMzAyLDM0NS4zNDAwMDAwMDAwMDAwNiAzMDIsMzEzLjk3NjAwMDAwMDAwMDA0IEwzMDIsMjcxLjU0ODk5OTk5OTk5OTk3IEMyMTIuNzk1LDI1Mi44ODMgMjIwLjU2ODgwNzk0ODQ4MTg3LDI0Mi42Mjg5OTk5OTk5OTk5OCAyMjAuNTY4ODA3OTQ4NDgxODcsMjMwLjM0Nzk5OTk5OTk5OTk4IEwyMjAuNTY4ODA3OTQ4NDgxODcsMjA5LjQ0NDk5OTk5OTk5OTk4IEMyNDEuMDY4ODA3OTQ4NDgxODcsMjE5LjY3Njk5OTk5OTk5OTk4IDI1My41NSwyMzguNzQgMjUzLjU1LDI2MC44NjkgTDI1My41NSwyNzEuMTAyIEwyNTMuNTUsMzEwLjUyNyBDMjY5LjIyLDMwNi42MjU5OTk5OTk5OTk5NyAyODQuNTMsMzE2Ljg2OCAyODkuNiwzMzMuMDkgTDI5NC41NywzNDkuOTcwMDAwMDAwMDAwMDQgQzI5NC41NywzNDkuOTcwMDAwMDAwMDAwMDQgMjkwLDM3MC44NzQgMjgwLjQ5LDM3MC44NzQgQzI3MC45NzU0NjU1ODYzMTYzLDM3MC44NzQgMjYzLjIxLDM0OS45NzAwMDAwMDAwMDAwNCAyNjMuMjEsMzQ5Ljk3MDAwMDAwMDAwMDA0IEwyNTEuMTksMzIyLjE3NCBDMjQ1LjgyLDMxMS45MTk5OTk5OTk5OTk5NyAyMzUuMzQsMzA1LjQzMSAyMjQuMjksMzA1LjQzMSBMMjIxLjE4LDMwNS40MzEgTDIyMS4xOCwzNDkuOTcwMDAwMDAwMDAwMDQgTDI1NS4wMywzNDkuOTcwMDAwMDAwMDAwMDQgWiIgZmlsbD0iI2YyZjJmMiIgc3Ryb2tlPSIjZjJmMmYyIiBzdHJva2Utd2lkdGg9IjIiLz48L2c+PGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMCwwKSI+PGNpcmNsZSByPSIxNDAiIGN4PSI0ODAiIGN5PSIzNTAiIGZpbGw9IiM4OTM4Y2EiIHNoYXBlPSJjaXJjbGUiLz48cGF0aCBkPSJNNTI1Ljk0LDQwMC4yOCBDNTI1Ljk0LDM5OS4xNyA0NjcuNjQsMzIyLjM4IDQ2Ny42NCwzMjIuMzggQzQ2Ny42NCwzMjIuMzggNDY3LjYzLDMyMi4zNyA0NjcuNjMsMzIyLjM3IEM0NjcuNjMsMzIyLjM2IDQ2Ny42MywzMjIuMzYgNDY3LjYzLDMyMi4zNiBDNDY2LjY3LDMyMC45NyA0NjYuMTksMzE5LjMyIDQ2Ni4xOSwzMTcuNTUgQzQ2Ni4xOSwzMTIuOTIgNDY5LjkzLDMwOS4xOCA0NzQuNTYsMzA5LjE4IEM0NzguMzQsMzA5LjE4IDQ4MS41MywzMTEuNzggNDgyLjY3LDMxNS4yOCBDNDgyLjY3LDMxNS4yOCA0ODIuNjcsMzE1LjI4IDQ4Mi42NywzMTUuMjggQzQ4Mi42NywzMTUuMjggNDgyLjY4LDMxNS4zIDQ4Mi42OCwzMTUuMyBDNDg0LjMzLDMyMSA0ODguMzUsMzI3LjY1IDQ5Mi40NCwzMzQuMzYgQzQ5Mi40NCwzMzQuMzYgNDkyLjQ0LDMzNC4zNiA0OTIuNDQsMzM0LjM2IEM0OTYuODcsMzI0LjkzIDUwNC4yNSwzMjYuNzggNTA2LjY3LDMyOS4yNyBDNTA2LjY3LDMyOS4yNyA1MDYuNjcsMzI5LjI3IDUwNi42NywzMjkuMjcgQzUwOS4xNSwzMjIuNSA1MTYuMDQsMzE3Ljc0IDUyMy45NiwzMTcuNzQgQzUzMC40LDMxNy43NCA1MzYuMDgsMzIxLjA0IDUzOS4xOCwzMjYuMTIgTDUzOS4yLDMyNi4xNCBDNTM5LjIsMzI2LjE0IDUzOS4yMSwzMjYuMTUgNTM5LjIxLDMyNi4xNiBDNTM5LjIxLDMyNi4xNiA1MzkuMjEsMzI2LjE2IDUzOS4yMSwzMjYuMTYgQzUzOS4yMywzMjYuMTkgNTM5LjI0LDMyNi4yMSA1MzkuMjYsMzI2LjI0IEM1MzkuMjYsMzI2LjI0IDUzOS4yNiwzMjYuMjQgNTM5LjI2LDMyNi4yNCBDNTQxLjc2LDMzMC41NiA1NDMuMTYsMzM1LjY0IDU0My4xNiwzNDEuMDkgQzU0My4xNiwzNDUuNjkgNTQyLjE3LDM1MC4wOCA1NDAuNDIsMzU0LjA1IEw1MjYuMjEsMzgyLjk0IEM1MjYuMjEsMzgyLjk0IDUyNS45NCw0MDAuNDcgNTI1Ljk0LDQwMC40NyBDNTI1Ljk0LDQwMC40NyA1MjUuOTQsNDAwLjI4IDUyNS45NCw0MDAuMjggWiBNNDk4LjY5LDI4MS4wNCBDNDk4LjY5LDI4MS4wNCA0OTguNjksMjgxLjA0IDQ5OC42OSwyODEuMDQgQzQ5OC42OSwyODEuMDQgNDk3LjQ5LDI3Mi4xNSA0ODUuMTYsMjcyLjcyIEw0MjguNTUsMjczLjk0IEw0MjguNTUsMjk1LjQ1IEw0OTguNjksMjgxLjA0IFoiIGZpbGw9IiNmZmZmZmYiIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2UtbGluZWNhcD0iYnV0dCIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIvPjwvZz48L3N2Zz4=" alt="Sign Language Avatar" class="sign-avatar">
+                    </div>
+                </div>
+                <div class="controls" style="flex-direction: column; align-items: center;">
+                    <textarea id="text-input" placeholder="Type your text here..." aria-label="Enter text to convert to sign language"></textarea>
+                    <button id="convert-text" class="control-btn" aria-label="Convert Text to Sign Language">
+                        <i class="fas fa-sign-language"></i> Convert to Sign Language
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="about-section animated" style="animation-delay: 0.5s">
+        <h2 class="section-title">About Sign Language</h2>
+        <div class="about-content">
+            <p class="about-text">Sign language is a visual language that uses hand shapes, facial expressions, gestures, and body language to communicate. It is the primary language of many deaf people around the world, with different countries and regions having their own sign languages.</p>
+            <p class="about-text">American Sign Language (ASL) is used in the United States and parts of Canada. It is a complete, complex language with its own grammar and syntax that differs from English. British Sign Language (BSL) is used in the United Kingdom and is different from ASL.</p>
+            <p class="about-text">Sign language is not universal, and there are over 300 different sign languages worldwide. Each sign language has its own vocabulary and grammatical structure. Many deaf communities consider their sign language an important part of their cultural identity.</p>
+            <p class="about-text">Learning sign language can enhance communication between deaf and hearing individuals, breaking down barriers and fostering inclusion. Our SignAI tool aims to bridge this gap using technology to interpret and translate sign language in real-time.</p>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 SignAI - Breaking Communication Barriers</p>
+    </footer>
+</div>
+
+<div class="modal" id="extension-modal">
+    <div class="modal-content">
+        <span class="close-modal" id="close-modal" role="button" tabindex="0" aria-label="Close modal">&times;</span>
+        <h2 style="margin-bottom: 1.5rem;">Switch to Extension Mode</h2>
+        <p style="margin-bottom: 1rem;">To use SignAI as a browser extension, you need to install it first. Once installed, you can use it on any webpage to interpret sign language or convert text/speech to sign language.</p>
+        <button id="install-extension" class="switch-btn pulse" style="margin-top: 1rem;" aria-label="Install SignAI Extension">Install Extension</button>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+<script>
+    // DOM Elements
+    const switchExtensionBtn = document.getElementById('switch-extension-btn');
+    const getStartedBtn = document.getElementById('get-started-btn');
+    const extensionModal = document.getElementById('extension-modal');
+    const closeModal = document.getElementById('close-modal');
+    const installExtensionBtn = document.getElementById('install-extension');
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
+    const startCameraBtn = document.getElementById('start-camera');
+    const startDetectionBtn = document.getElementById('start-detection');
+    const stopDetectionBtn = document.getElementById('stop-detection');
+    const startListeningBtn = document.getElementById('start-listening');
+    const stopListeningBtn = document.getElementById('stop-listening');
+    const convertTextBtn = document.getElementById('convert-text');
+    const textInput = document.getElementById('text-input');
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const outputText = document.getElementById('output-text');
+    const speechText = document.getElementById('speech-text');
+
+    // Variables for hand detection
+    let isDetecting = false;
+    let stream = null;
+    let handDetectionInterval = null;
+    let speechRecognition = null;
+
+    // Initialize application
+    function initApp() {
+        // Add animation to elements when they come into view
+        const animatedElements = document.querySelectorAll('.animated');
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = 1;
+                    entry.target.style.transform = 'translateY(0)';
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, {
+            threshold: 0.1
+        });
+        
+        animatedElements.forEach(element => {
+            element.style.opacity = 0;
+            element.style.transform = 'translateY(20px)';
+            element.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
+            observer.observe(element);
+        });
+
+        // Set up tab switching
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                switchTab(button);
+            });
+            
+            // Add keyboard accessibility
+            button.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    switchTab(button);
+                }
+            });
+        });
+
+        // Event Listeners
+        switchExtensionBtn.addEventListener('click', openExtensionModal);
+        getStartedBtn.addEventListener('click', scrollToDemo);
+        closeModal.addEventListener('click', closeExtensionModal);
+        closeModal.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                closeExtensionModal();
+            }
+        });
+        window.addEventListener('click', (event) => {
+            if (event.target === extensionModal) {
+                closeExtensionModal();
+            }
+        });
+        window.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && extensionModal.style.display === 'block') {
+                closeExtensionModal();
+            }
+        });
+        installExtensionBtn.addEventListener('click', installExtension);
+        startCameraBtn.addEventListener('click', startCamera);
+        startDetectionBtn.addEventListener('click', startDetection);
+        stopDetectionBtn.addEventListener('click', stopDetection);
+        startListeningBtn.addEventListener('click', startSpeechRecognition);
+        stopListeningBtn.addEventListener('click', stopSpeechRecognition);
+        convertTextBtn.addEventListener('click', convertTextToSign);
+        
+        // Add enter key support for text input
+        textInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && e.ctrlKey) {
+                convertTextToSign();
+            }
+        });
+    }
+
+    // Tab switching function
+    function switchTab(button) {
+        // Remove active class from all buttons and content
+        tabButtons.forEach(btn => btn.classList.remove('active'));
+        tabContents.forEach(content => content.classList.remove('active'));
+        
+        // Add active class to clicked button and corresponding content
+        button.classList.add('active');
+        const tabId = button.getAttribute('data-tab');
+        document.getElementById(tabId).classList.add('active');
+        
+        // Stop ongoing processes when switching tabs
+        stopDetection();
+        stopSpeechRecognition();
+        
+        // Stop camera if switching away from sign-to-text tab
+        if (tabId !== 'sign-to-text' && stream) {
+            stopCamera();
+        }
+    }
+
+    // Modal functions
+    function openExtensionModal() {
+        extensionModal.style.display = 'block';
+        closeModal.focus();
+    }
+
+    function closeExtensionModal() {
+        extensionModal.style.display = 'none';
+        switchExtensionBtn.focus();
+    }
+
+    function installExtension() {
+        alert('Extension installation initiated. Follow the browser prompts to complete installation.');
+        closeExtensionModal();
+    }
+
+    function scrollToDemo() {
+        const demoSection = document.querySelector('.app-demo');
+        demoSection.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Camera and hand detection functions
+    async function startCamera() {
+        try {
+            stream = await navigator.mediaDevices.getUserMedia({ 
+                video: { 
+                    width: { ideal: 1280 },
+                    height: { ideal: 720 },
+                    facingMode: 'user' 
+                } 
+            });
+            
+            video.srcObject = stream;
+            video.play();
+            
+            const ctx = canvas.getContext('2d');
+            canvas.width = video.videoWidth || 640;
+            canvas.height = video.videoHeight || 480;
+            
+            startCameraBtn.disabled = true;
+            startDetectionBtn.disabled = false;
+            outputText.textContent = "Camera started. Click 'Start Detection' to begin hand tracking.";
+            
+        } catch (error) {
+            console.error('Error accessing webcam:', error);
+            outputText.textContent = "Error accessing webcam. Please make sure camera permissions are granted.";
+        }
+    }
+
+    function stopCamera() {
+        if (stream) {
+            stream.getTracks().forEach(track => track.stop());
+            stream = null;
+            video.srcObject = null;
+            startCameraBtn.disabled = false;
+            startDetectionBtn.disabled = true;
+            stopDetectionBtn.disabled = true;
+        }
+    }
+
+    function startDetection() {
+        if (!stream) {
+            outputText.textContent = "Please start the camera first.";
+            return;
+        }
+        
+        isDetecting = true;
+        startDetectionBtn.disabled = true;
+        stopDetectionBtn.disabled = false;
+        outputText.textContent = "Detecting hand gestures... (Simulated detection in this demo)";
+        
+        let detectionPhase = 0;
+        const detectionResults = [
+            "Detecting hand position...",
+            "Recognized gesture: 'Hello'",
+            "Recognized gesture: 'Thank you'",
+            "Tracking multiple hand positions...",
+            "Recognized sign: 'Help'",
+            "Recognized sign sequence: 'How are you?'"
+        ];
+        
+        handDetectionInterval = setInterval(() => {
+            simulateHandLandmarks();
+            outputText.textContent = detectionResults[detectionPhase % detectionResults.length];
+            detectionPhase++;
+        }, 2000);
+    }
+
+    function simulateHandLandmarks() {
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+        
+        const offsetX = Math.random() * 100 - 50;
+        const offsetY = Math.random() * 100 - 50;
+        
+        ctx.beginPath();
+        ctx.arc(centerX + offsetX, centerY + offsetY, 20, 0, 2 * Math.PI);
+        ctx.fillStyle = 'rgba(100, 255, 218, 0.5)';
+        ctx.fill();
+        
+        for (let i = 0; i < 5; i++) {
+            const angle = (i * Math.PI / 2.5) - Math.PI / 5;
+            const length = 50 + Math.random() * 30;
+            
+            const endX = centerX + offsetX + Math.cos(angle) * length;
+            const endY = centerY + offsetY - Math.sin(angle) * length;
+            
+            const midX = centerX + offsetX + Math.cos(angle) * (length / 2);
+            const midY = centerY + offsetY - Math.sin(angle) * (length / 2);
+            
+            ctx.beginPath();
+            ctx.moveTo(centerX + offsetX, centerY + offsetY);
+            ctx.lineTo(midX, midY);
+            ctx.lineTo(endX, endY);
+            ctx.strokeStyle = 'rgba(100, 255, 218, 0.8)';
+            ctx.lineWidth = 3;
+            ctx.stroke();
+            
+            ctx.beginPath();
+            ctx.arc(midX, midY, 5, 0, 2 * Math.PI);
+            ctx.fillStyle = 'rgba(100, 255, 218, 0.8)';
+            ctx.fill();
+            
+            ctx.beginPath();
+            ctx.arc(endX, endY, 5, 0, 2 * Math.PI);
+            ctx.fillStyle = 'rgba(100, 255, 218, 0.8)';
+            ctx.fill();
+        }
+    }
+
+    function stopDetection() {
+        if (handDetectionInterval) {
+            clearInterval(handDetectionInterval);
+            handDetectionInterval = null;
+        }
+        
+        if (canvas) {
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+        
+        isDetecting = false;
+        startDetectionBtn.disabled = stream ? false : true;
+        stopDetectionBtn.disabled = true;
+        
+        if (outputText) {
+            outputText.textContent = "Detection stopped.";
+        }
+    }
+
+    // Speech recognition functions
+    function startSpeechRecognition() {
+        if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            speechRecognition = new SpeechRecognition();
+            speechRecognition.continuous = true;
+            speechRecognition.interimResults = true;
+            
+            speechRecognition.onstart = () => {
+                startListeningBtn.disabled = true;
+                stopListeningBtn.disabled = false;
+                speechText.textContent = "Listening...";
+            };
+            
+            speechRecognition.onresult = (event) => {
+                const transcript = Array.from(event.results)
+                    .map(result => result[0])
+                    .map(result => result.transcript)
+                    .join('');
+                
+                speechText.textContent = transcript;
+                simulateSignAnimation(transcript, 'speech-to-sign');
+            };
+            
+            speechRecognition.onerror = (event) => {
+                console.error('Speech recognition error:', event.error);
+                speechText.textContent = `Error: ${event.error}`;
+                stopSpeechRecognition();
+            };
+            
+            speechRecognition.onend = () => {
+                startListeningBtn.disabled = false;
+                stopListeningBtn.disabled = true;
+            };
+            
+            speechRecognition.start();
+        } else {
+            speechText.textContent = "Your browser doesn't support speech recognition. Try using Chrome or Edge.";
+        }
+    }
+
+    function stopSpeechRecognition() {
+        if (speechRecognition) {
+            speechRecognition.stop();
+            speechRecognition = null;
+        }
+        
+        startListeningBtn.disabled = false;
+        stopListeningBtn.disabled = true;
+    }
+
+    // Text to sign functions
+    function convertTextToSign() {
+        const text = textInput.value.trim();
+        if (text) {
+            simulateSignAnimation(text, 'text-to-sign');
+        } else {
+            alert("Please enter some text to convert to sign language.");
+        }
+    }
+
+    function simulateSignAnimation(text, tabId) {
+        const tabElement = document.getElementById(tabId);
+        const avatar = tabElement.querySelector('.sign-avatar');
+        
+        if (!avatar) return;
+        
+        let wordCount = 0;
+        const words = text.split(' ').filter(w => w.length > 0);
+        
+        if (words.length === 0) return;
+        
+        // Clear any existing animation interval
+        if (avatar.dataset.animInterval) {
+            clearInterval(parseInt(avatar.dataset.animInterval));
+        }
+        
+        const animInterval = setInterval(() => {
+            if (wordCount < words.length) {
+                avatar.style.transition = 'transform 0.5s ease-in-out';
+                
+                const randomMove = wordCount % 4;
+                switch (randomMove) {
+                    case 0:
+                        avatar.style.transform = 'translateY(-10px) rotate(5deg)';
+                        break;
+                    case 1:
+                        avatar.style.transform = 'translateX(10px) rotate(-5deg)';
+                        break;
+                    case 2:
+                        avatar.style.transform = 'translateY(10px)';
+                        break;
+                    case 3:
+                        avatar.style.transform = 'translateX(-10px)';
+                        break;
+                }
+                
+                wordCount++;
+            } else {
+                clearInterval(animInterval);
+                avatar.style.transform = 'none';
+            }
+        }, 800);
+        
+        avatar.dataset.animInterval = animInterval;
+    }
+
+    // Initialize the application when DOM is loaded
+    document.addEventListener('DOMContentLoaded', initApp);
+</script>
