@@ -1,3 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Language Interpreter</title>
+    <style>
+        :root {
+            --dark-navy: #0a192f;
+            --lighter-navy: #112240;
+            --highlight: #64ffda;
+            --text-primary: #e6f1ff;
+            --text-secondary: #8892b0;
+            --border-radius: 12px;
+            --button-radius: 8px;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--dark-navy);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 0;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo i {
+            color: var(--highlight);
+        }
+
+        .switch-btn {
+            background-color: var(--highlight);
+            color: var(--dark-navy);
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: var(--button-radius);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .switch-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(100, 255, 218, 0.3);
+        }
+
+        .switch-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .switch-btn:focus {
+            outline: 2px solid var(--highlight);
+            outline-offset: 2px;
+        }
+
+        .hero {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .hero-content {
+            flex: 1;
+        }
+
+        .hero-title {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .hero-image {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+        }
+
+        .hero-image img {
+            max-width: 100%;
+            border-radius: var(--border-radius);
+        }
+
+        .features {
+            margin: 4rem 0;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background-color: var(--highlight);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background-color: var(--lighter-navy);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(17, 34, 64, 0.3);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--highlight);
+            margin-bottom: 1rem;
+        }
+
+        .feature-title {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-description {
+            color: var(--text-secondary);
+        }
+
+        .app-demo {
+            background-color: var(--lighter-navy);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            margin: 3rem 0;
+        }
+
+        .demo-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .demo-title {
+            font-size: 1.5rem;
+        }
+
+        .tab-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background-color: transparent;
+            color: var(--text-secondary);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: var(--button-radius);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .tab-btn:hover {
+            color: var(--highlight);
+        }
+
+        .tab-btn.active {
+            background-color: var(--highlight);
+            color: var(--dark-navy);
+            font-weight: 600;
+        }
+
+        .tab-btn:focus {
+            outline: 2px solid var(--highlight);
+            outline-offset: 2px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .demo-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .video-container {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background-color: #000;
+            border-radius: var(--border-radius);
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+            position: relative;
+        }
+
+        #video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .canvas-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            width: 100%;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .control-btn {
+            background-color: var(--dark-navy);
+            color: var(--text-primary);
+            border: 1px solid var(--highlight);
+            padding: 0.8rem 1.5rem;
+            border-radius: var(--button-radius);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .control-btn:hover {
+            background-color: var(--highlight);
+            color: var(--dark-navy);
+        }
+
+        .control-btn:active {
+            transform: scale(0.98);
+        }
+
+        .control-btn:focus {
+            outline: 2px solid var(--highlight);
+            outline-offset: 2px;
+        }
+
+        .control-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .control-btn:disabled:hover {
+            background-color: var(--dark-navy);
+            color: var(--text-primary);
+            transform: none;
+        }
+
+        .output-container {
+            width: 100%;
+            min-height: 100px;
+            background-color: var(--dark-navy);
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            margin-top: 1.5rem;
+            border: 1px solid var(--lighter-navy);
+        }
+
+        #output-text {
+            color: var(--text-primary);
+        }
+
+        .about-section {
+            margin: 4rem 0;
+        }
+
+        .about-content {
+            background-color: var(--lighter-navy);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+        }
+
+        .about-text {
+            margin-bottom: 1.5rem;
+        }
+
+        footer {
+            border-top: 1px solid var(--lighter-navy);
+            margin-top: 4rem;
+            padding: 2rem 0;
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        /* Media Queries */
+        @media (max-width: 768px) {
+            .hero {
+                flex-direction: column;
+            }
+
+            .hero-image {
+                order: -1;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .demo-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .tab-buttons {
+                width: 100%;
+            }
+
+            .controls {
+                flex-wrap: wrap;
+            }
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animated {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(10, 25, 47, 0.9);
+            z-index: 1000;
+            overflow: auto;
+        }
+
+        .modal-content {
+            background-color: var(--lighter-navy);
+            margin: 10% auto;
+            padding: 2rem;
+            width: 80%;
+            max-width: 600px;
+            border-radius: var(--border-radius);
+            position: relative;
+            animation: fadeIn 0.3s;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .close-modal:hover {
+            color: var(--highlight);
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Custom image styles */
+        .logo-image {
+            width: 200px;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .avatar-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+        }
+
+        .sign-avatar {
+            max-height: 80%;
+            max-width: 80%;
+            object-fit: contain;
+        }
+
+        /* Accessibility improvements */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
+        /* Text input improvements */
+        #text-input {
+            width: 100%;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            background-color: var(--dark-navy);
+            color: var(--text-primary);
+            border: 1px solid var(--lighter-navy);
+            resize: vertical;
+            min-height: 100px;
+            margin-bottom: 1rem;
+            transition: var(--transition);
+        }
+
+        #text-input:focus {
+            border-color: var(--highlight);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(100, 255, 218, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-hands"></i>
+                <span>SignAI</span>
+            </div>
+            <button id="switch-extension-btn" class="switch-btn" aria-label="Switch to Extension Mode">Switch to Extension</button>
+        </header>
+
+        <section class="hero animated">
+            <div class="hero-content">
+                <h1 class="hero-title">Breaking Communication Barriers with AI</h1>
+                <p class="hero-subtitle">Our sign language interpreter uses cutting-edge computer vision and machine learning to bridge the gap between signed and spoken language.</p>
+                <button id="get-started-btn" class="switch-btn" aria-label="Get Started with SignAI">Get Started</button>
+            </div>
+            <div class="hero-image">
+                <!-- Custom logo image -->
+                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA3MDAgNzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJyZ2JhKDAsIDAsIDAsIDApIi8+PGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMCwwKSI+PGNpcmNsZSByPSIxNDAiIGN4PSIyMjAiIGN5PSIzNTAiIGZpbGw9IiNlZGM5MmEiIHNoYXBlPSJjaXJjbGUiLz48cGF0aCBkPSJNMjU1LjAzLDM0OS45NzAwMDAwMDAwMDAwNCBDMjU1LjAzLDM0OS45NzAwMDAwMDAwMDAwNCAyNDkuOTYsMzcwLjg3NCAyNDAuNDQsMzcwLjg3NCAyMzAuOTI5OTk5OTk5OTk5OTgsMzcwLjg3NCAyMjIuNSwzNDkuOTcwMDAwMDAwMDAwMDQgMjIyLjUsMzQ5Ljk3MDAwMDAwMDAwMDA0IEwyMjIuNSwzMDUuNDMxIEwyMTkuMzksMzA1LjQzMSBDMjA4LjMzOTk5OTk5OTk5OTk4LDMwNS40MzEgMTk3Ljg2LDMxMS45MTk5OTk5OTk5OTk5NyAxOTIuNDksMzIyLjE3NCBMMTgwLjQ3LDM0OS45NzAwMDAwMDAwMDAwNCBDMTgwLjQ3LDM0OS45NzAwMDAwMDAwMDAwNCAxNzIuNywzNzAuODc0IDE2My4xOCwzNzAuODc0IDE1My42NywzNzAuODc0IDE0OS4xLDM0OS45NzAwMDAwMDAwMDAwNCAxNDkuMSwzNDkuOTcwMDAwMDAwMDAwMDQgTDE1NC4wNjk5OTk5OTk5OTk5OCwzMzMuMDkgQzE1OS4xNCwzMTYuODY4IDE3NC40NSwzMDYuNjM2OTk5OTk5OTk5OTYgMTkwLjEyLDMxMC41MjUgTDE5MC4xMiwyNzEuMTAyIEwxOTAuMTIsMjYwLjg2ODk5OTk5OTk5OTk3IEMxOTAuMTIsMjM4LjczOTk5OTk5OTk5OTk4IDIwMi42LDIxOS42NzY5OTk5OTk5OTk5OCAyMjMuMSwyMDkuNDQ0OTk5OTk5OTk5OTggTDIyMy4xLDIzMC4zNDc5OTk5OTk5OTk5OCBDMjIzLjEsMjQyLjYyODk5OTk5OTk5OTk4IDIzMC44NjkwMDAwMDAwMDAwMywyNTIuODgzIDE0MS42NjQsMjcxLjU0ODk5OTk5OTk5OTk3IEwxNDEuNjY0LDMxMy45NzYwMDAwMDAwMDAwNCBDMTQxLjY2LDM0NS4zNDAwMDAwMDAwMDAwNiAxNTcuNTgsMzcyLjY4NDAwMDAwMDAwMDA0IDE4Mi40OCwzODUuODU3MDAwMDAwMDAwMDQgTDE4Mi40OCwzNTIuNzQ1MDAwMDAwMDAwMDUgQzE4Mi40OCwzNDUuNzc1MDAwMDAwMDAwMDYgMTg3LjksNDAwLjE5MDAwMDAwMDAwMDA1IDE5OS43Nyw0MDAuMTkwMDAwMDAwMDAwMDUgTDIwNC4yNyw0MDAuMTkwMDAwMDAwMDAwMDUgQzIyMS4wMyw0MDAuMTkwMDAwMDAwMDAwMDUgMjI0LjksNDAwLjE5MDAwMDAwMDAwMDA1IDI0MC4wMSw0MDAuMTkwMDAwMDAwMDAwMDUgTDI0My45LDQwMC4xOTAwMDAwMDAwMDAwNSBDMjU1Ljc2LDQwMC4xOTAwMDAwMDAwMDAwNSAyNjEuMTgsMzQ1Ljc3NTAwMDAwMDAwMDA2IDI2MS4xOCwzNTIuNzQ1MDAwMDAwMDAwMDUgTDI2MS4xOCwzODUuODU3MDAwMDAwMDAwMDQgQzI4Ni4wOCwzNzIuNjg0MDAwMDAwMDAwMDQgMzAyLDM0NS4zNDAwMDAwMDAwMDAwNiAzMDIsMzEzLjk3NjAwMDAwMDAwMDA0IEwzMDIsMjcxLjU0ODk5OTk5OTk5OTk3IEMyMTIuNzk1LDI1Mi44ODMgMjIwLjU2ODgwNzk0ODQ4MTg3LDI0Mi42Mjg5OTk5OTk5OTk5OCAyMjAuNTY4ODA3OTQ4NDgxODcsMjMwLjM0Nzk5OTk5OTk5OTk4IEwyMjAuNTY4ODA3OTQ4NDgxODcsMjA5LjQ0NDk5OTk5OTk5OTk4IEMyNDEuMDY4ODA3OTQ4NDgxODcsMjE5LjY3Njk5OTk5OTk5OTk4IDI1My41NSwyMzguNzQgMjUzLjU1LDI2MC44NjkgTDI1My41NSwyNzEuMTAyIEwyNTMuNTUsMzEwLjUyNyBDMjY5LjIyLDMwNi42MjU5OTk5OTk5OTk5NyAyODQuNTMsMzE2Ljg2OCAyODkuNiwzMzMuMDkgTDI5NC41NywzNDkuOTcwMDAwMDAwMDAwMDQgQzI5NC41NywzNDkuOTcwMDAwMDAwMDAwMDQgMjkwLDM3MC44NzQgMjgwLjQ5LDM3MC44NzQgQzI3MC45NzU0NjU1ODYzMTYzLDM3MC44NzQgMjYzLjIxLDM0OS45NzAwMDAwMDAwMDAwNCAyNjMuMjEsMzQ5Ljk3MDAwMDAwMDAwMDA0IEwyNTEuMTksMzIyLjE3NCBDMjQ1LjgyLDMxMS45MTk5OTk5OTk5OTk5NyAyMzUuMzQsMzA1LjQzMSAyMjQuMjksMzA1LjQzMSBMMjIxLjE4LDMwNS40MzEgTDIyMS4xOCwzNDkuOTcwMDAwMDAwMDAwMDQgTDI1NS4wMywzNDkuOTcwMDAwMDAwMDAwMDQgWiIgZmlsbD0iI2YyZjJmMiIgc3Ryb2tlPSIjZjJmMmYyIiBzdHJva2Utd2lkdGg9IjIiLz48L2c+PGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMCwwKSI+PGNpcmNsZSByPSIxNDAiIGN4PSI0ODAiIGN5PSIzNTAiIGZpbGw9IiM4OTM4Y2EiIHNoYXBlPSJjaXJjbGUiLz48cGF0aCBkPSJNNTI1Ljk0LDQwMC4yOCBDNTI1Ljk0LDM5OS4xNyA0NjcuNjQsMzIyLjM4IDQ2Ny42NCwzMjIuMzggQzQ2Ny42NCwzMjIuMzggNDY3LjYzLDMyMi4zNyA0NjcuNjMsMzIyLjM3IEM0NjcuNjMsMzIyLjM2IDQ2Ny42MywzMjIuMzYgNDY3LjYzLDMyMi4zNiBDNDY2LjY3LDMyMC45NyA0NjYuMTksMzE5LjMyIDQ2Ni4xOSwzMTcuNTUgQzQ2Ni4xOSwzMTIuOTIgNDY5LjkzLDMwOS4xOCA0NzQuNTYsMzA5LjE4IEM0NzguMzQsMzA5LjE4IDQ4MS41MywzMTEuNzggNDgyLjY3LDMxNS4yOCBDNDgyLjY3LDMxNS4yOCA0ODIuNjcsMzE1LjI4IDQ4Mi42NywzMTUuMjggQzQ4Mi42NywzMTUuMjggNDgyLjY4LDMxNS4zIDQ4Mi42OCwzMTUuMyBDNDg0LjMzLDMyMSA0ODguMzUsMzI3LjY1IDQ5Mi40NCwzMzQuMzYgQzQ5Mi40NCwzMzQuMzYgNDkyLjQ0LDMzNC4zNiA0OTIuNDQsMzM0LjM2IEM0OTYuODcsMzI0LjkzIDUwNC4yNSwzMjYuNzggNTA2LjY3LDMyOS4yNyBDNTA2LjY3LDMyOS4yNyA1MDYuNjcsMzI5LjI3IDUwNi42NywzMjkuMjcgQzUwOS4xNSwzMjIuNSA1MTYuMDQsMzE3Ljc0IDUyMy45NiwzMTcuNzQgQzUzMC40LDMxNy43NCA1MzYuMDgsMzIxLjA0IDUzOS4xOCwzMjYuMTIgTDUzOS4yLDMyNi4xNCBDNTM5LjIsMzI2LjE0IDUzOS4yMSwzMjYuMTUgNTM5LjIxLDMyNi4xNiBDNTM5LjIxLDMyNi4xNiA1MzkuMjEsMzI2LjE2IDUzOS4yMSwzMjYuMTYgQzUzOS4yMywzMjYuMTkgNTM5LjI0LDMyNi4yMSA1MzkuMjYsMzI2LjI0IEM1MzkuMjYsMzI2LjI0IDUzOS4yNiwzMjYuMjQgNTM5LjI2LDMyNi4yNCBDNTQxLjc2LDMzMC41NiA1NDMuMTYsMzM1LjY0IDU0My4xNiwzNDEuMDkgQzU0My4xNiwzNDUuNjkgNTQyLjE3LDM1MC4wOCA1NDAuNDIsMzU0LjA1IEw1MjYuMjEsMzgyLjk0IEM1MjYuMjEsMzgyLjk0IDUyNS45NCw0MDAuNDcgNTI1Ljk0LDQwMC40NyBDNTI1Ljk0LDQwMC40NyA1MjUuOTQsNDAwLjI4IDUyNS45NCw0MDAuMjggWiBNNDk4LjY5LDI4MS4wNCBDNDk4LjY5LDI4MS4wNCA0OTguNjksMjgxLjA0IDQ5OC42OSwyODEuMDQgQzQ5OC42OSwyODEuMDQgNDk3LjQ5LDI3Mi4xNSA0ODUuMTYsMjcyLjcyIEw0MjguNTUsMjczLjk0IEw0MjguNTUsMjk1LjQ1IEw0OTguNjksMjgxLjA0IFoiIGZpbGw9IiNmZmZmZmYiIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2UtbGluZWNhcD0iYnV0dCIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIvPjwvZz48L3N2Zz4=" alt="SignAI Logo" class="logo-image">
+            </div>
+        </section>
+
+        <section class="features">
+            <h2 class="section-title">Features</h2>
+            <div class="features-grid">
+                <div class="feature-card animated" style="animation-delay: 0.1s">
+                    <div class="feature-icon">
+                        <i class="fas fa-hand-paper"></i>
+                    </div>
+                    <h3 class="feature-title">Sign Language Detection</h3>
+                    <p class="feature-description">Our system uses advanced computer vision to detect and interpret signs in real-time with high accuracy.</p>
+                </div>
+                <div class="feature-card animated" style="animation-delay: 0.2s">
+                    <div class="feature-icon">
+                        <i class="fas fa-microphone-alt"></i>
+                    </div>
+                    <h3 class="feature-title">Speech to Sign</h3>
+                    <p class="feature-description">Convert spoken language into corresponding sign language animations to facilitate two-way communication.</p>
+                </div>
+                <div class="feature-card animated" style="animation-delay: 0.3s">
+                    <div class="feature-icon">
+                        <i class="fas fa-comment-alt"></i>
+                    </div>
+                    <h3 class="feature-title">Text to Sign</h3>
+                    <p class="feature-description">Type text and watch it be translated into sign language, making digital content more accessible.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="app-demo animated" style="animation-delay: 0.4s">
+            <div class="demo-header">
+                <h2 class="demo-title">Try It Now</h2>
+                <div class="tab-buttons">
+                    <button class="tab-btn active" data-tab="sign-to-text" aria-label="Switch to Sign to Text tab">Sign to Text</button>
+                    <button class="tab-btn" data-tab="speech-to-sign" aria-
 <div class="tab-content active" id="sign-to-text">
             <div class="demo-area">
                 <div class="video-container">
